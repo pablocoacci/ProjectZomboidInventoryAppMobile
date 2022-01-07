@@ -1,123 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Button } from 'react-native';
 import style from './styles';
 import * as GameRepository from '../../repositories/GamesRepository';
 
 export default function GameManagerScreen({ navigation, route }) {
 
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ];
-
+  const [refresh, setRefresh] = useState(true);
+  const [gameList, setGameList] = useState([]);
   const [gameName, setGameName] = useState('');
 
+  useEffect(async () => {
+    let games = await GameRepository.getAllGames();
+    setGameList(games);
+  }, [refresh])
+
   const newGame = async () => {
-    console.log(gameName);
-    alert('hola mundo');
+    let existName = await GameRepository.existGame(gameName);
+    
+    if (existName) {
+      alert('Ya existe esta partida');
+      return;
+    }
+    
+    await GameRepository.saveGame(gameName);
+    setGameName('');
+    setRefresh(!refresh);
+    alert('Partida Creada');
   }
 
-  const prueba = (textito) => {
-    console.log('entro');
-    console.log(textito);
-    alert('hola mundo2');
+  const deleteGame = async (gameName) => {
+    await GameRepository.deleteGame(gameName);
+    setRefresh(!refresh);
   }
 
-  const Item = ({ title }) => (
-    <View style={style.item}>
-      <Text style={style.title}>{title}</Text>
+  const Item = ({ gameName }) => (
+    <View style={{flexDirection:'row', backgroundColor:'lavender', marginBottom:15, justifyContent: 'space-between'}}>
+      <Text style={{fontSize: 25, marginLeft:5, padding:15}}>{gameName}</Text>
       <TouchableOpacity
-          
-          onPress={() => {prueba(title)}}
+          style={{margin:10,padding:15,backgroundColor:'lightcoral'}}
+          onPress={() => {deleteGame(gameName)}}
         >
-          <Text>texto boton</Text>
+          <Text>Borrar</Text>
         </TouchableOpacity>
     </View>
   );
 
   const renderItem = ({ item }) => (
-    <Item title={item.title} />
+    <Item gameName={item} />
   );
 
   return (
-      <View style={style.container}>
-        <View style={style.countContainer}>
-          <Text>Nombre de la Partida</Text>
+      <View style={{flex:1, marginLeft: 10, marginRight: 10}}>
+        <View>
+          <Text style={{fontSize: 15, marginTop: 5, marginBottom: 10}}>Nombre de la Partida</Text>
           <TextInput
-            style={style.input}
+            style={{borderWidth:1, padding: 3, marginBottom: 10}}
             onChangeText={setGameName}
             value={gameName}
           />
+        
+          <TouchableOpacity
+            style={{alignItems: "center",backgroundColor: "#DDDDDD", padding: 10, marginBottom: 10}}
+            onPress={newGame}
+          >
+            <Text>Crear Partida</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={style.button}
-          onPress={newGame}
-        >
-          <Text>Crear Partida</Text>
-        </TouchableOpacity>
-        <FlatList
-          data={DATA}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
+        <View style={{flex:1, borderWidth:1}}>
+          <FlatList
+            data={gameList}
+            renderItem={renderItem}
+            keyExtractor={(item) => item}
+          />
+        </View>
       </View>
     );
   }

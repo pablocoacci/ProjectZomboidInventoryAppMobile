@@ -44,6 +44,11 @@ export const deleteGame = async (gameName) => {
 
 export const existGame = async (gameName) => {
     const jsonValue = await AsyncStorage.getItem(gameStorageKey);
+
+    if (jsonValue == null) {
+        return false;
+    }
+
     let games = JSON.parse(jsonValue)
     const index = games.indexOf(gameName);
     return index != -1;
