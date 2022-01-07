@@ -53,11 +53,3 @@ export const existGame = async (gameName) => {
     const index = games.indexOf(gameName);
     return index != -1;
 }
-
-export const deleteAllGames = async () => {
-    const jsonValue = await AsyncStorage.getItem(gameStorageKey);
-    
-    if(jsonValue != null) {
-        await AsyncStorage.removeItem(gameStorageKey);
-    }
-}

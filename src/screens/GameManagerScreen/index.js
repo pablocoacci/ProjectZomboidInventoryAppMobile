@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Button } from 'react-native';
 import style from './styles';
 import * as GameRepository from '../../repositories/GamesRepository';
+import * as ItemsRepository from '../../repositories/ItemsRepository';
 
 export default function GameManagerScreen({ navigation, route }) {
 
@@ -15,6 +16,10 @@ export default function GameManagerScreen({ navigation, route }) {
   }, [refresh])
 
   const newGame = async () => {
+    if (gameName == '') {
+      return;
+    }
+
     let existName = await GameRepository.existGame(gameName);
     
     if (existName) {
@@ -23,6 +28,7 @@ export default function GameManagerScreen({ navigation, route }) {
     }
     
     await GameRepository.saveGame(gameName);
+    await ItemsRepository.createInventoryGame(gameName);
     setGameName('');
     setRefresh(!refresh);
     alert('Partida Creada');
@@ -30,6 +36,7 @@ export default function GameManagerScreen({ navigation, route }) {
 
   const deleteGame = async (gameName) => {
     await GameRepository.deleteGame(gameName);
+    await ItemsRepository.deleteInventoryGame(gameName);
     setRefresh(!refresh);
   }
 
