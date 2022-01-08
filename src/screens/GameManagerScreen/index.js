@@ -44,11 +44,17 @@ export default function GameManagerScreen({ navigation, route }) {
     <View style={{flexDirection:'row', backgroundColor:'lavender', marginBottom:15, justifyContent: 'space-between'}}>
       <Text style={{fontSize: 25, marginLeft:5, padding:15}}>{gameName}</Text>
       <TouchableOpacity
-          style={{margin:10,padding:15,backgroundColor:'lightcoral'}}
-          onPress={() => {deleteGame(gameName)}}
-        >
-          <Text>Borrar</Text>
-        </TouchableOpacity>
+        style={{margin:10,padding:15,backgroundColor:'lightcoral'}}
+        onPress={() => {deleteGame(gameName)}}
+      >
+        <Text>Borrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{margin:10,padding:15,backgroundColor:'lightcoral'}}
+        onPress={() => navigation.navigate('Inventory', {gameName: gameName})}
+      >
+        <Text>Ver</Text>
+      </TouchableOpacity>
     </View>
   );
 
