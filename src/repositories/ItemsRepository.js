@@ -1,85 +1,76 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const itemKitchenKey = 'kitechenitems'
-const itemsBooksKey = 'booksitems';
-const itemsToolsKey = 'toolsItem';
-const itemsWeaponsKey = 'weaponItem';
+const itemsKey = '@itemsKey';
 
-const defaultKitchenItems = ['Cacerola','Olla','Sarten'];
-const defaultBooksItems = ['Carpitenria 1', 'Cocina 1', 'Electronica 1'];
-const defaultToolsItems = ['Martillo','Sierra'];
-const defaultWeaponsItems = ['Katana','Escopeta'];
-
-const saveItem = async (key, defaultList, itemName) => {
-    key = '@'+key;
-    let itemsList = [];
-    let jsonValue = await AsyncStorage.getItem(key);
-
-    if (jsonValue == null) {
-        itemsList = defaultList;
+const defaultItemList = [
+    {
+        ItemName: 'Cacerola',
+        Category: 'Cocina'
+    },
+    {
+        ItemName: 'Olla',
+        Category: 'Cocina'
+    },
+    {
+        ItemName: 'Carpinteria Novato',
+        Category: 'Libro'
+    },
+    {
+        ItemName: 'Cocina Intermedia',
+        Category: 'Libro'
+    },
+    {
+        ItemName: 'Electronica Novato',
+        Category: 'Libro'
+    },
+    {
+        ItemName: 'Martillo',
+        Category: 'Herramienta'
+    },
+    {
+        ItemName: 'Sierra',
+        Category: 'Herramienta'
+    },
+    {
+        ItemName: 'Katana',
+        Category: 'Arma'
+    },
+    {
+        ItemName: 'Escopeta',
+        Category: 'Herramienta'
     }
-    else {
-        itemsList = JSON.parse(jsonValue)
-    }
+]
 
-    if (itemName != null) {
-        itemsList.push(itemName);
-    }
-    
-    jsonValue = JSON.stringify(itemsList);
-    await AsyncStorage.setItem(key, jsonValue)
+const getInventoryKey = (gameName) => {
+    return itemsKey+gameName;
 }
 
-const createDefaultItems = async (key) => {
-    let defaultList = [];
-
-    switch(key) {
-        case itemKitchenKey:
-            defaultList = defaultKitchenItems;
-            break;
-        case itemsBooksKey:
-            defaultList = defaultBooksItems;
-            break;
-        case itemsToolsKey:
-            defaultList = defaultToolsItems;
-            break;
-        case itemsWeaponsKey:
-            defaultList = defaultWeaponsItems;
-            break;
-        default:
-            defaultList = [];
-            break;
-    }
-
-    const jsonValue = JSON.stringify(defaultList);
-    await AsyncStorage.setItem('@'+key, jsonValue)
+const createDefaultItems = async () => {
+    const jsonValue = JSON.stringify(defaultItemList);
+    await AsyncStorage.setItem(itemsKey, jsonValue)
 }
 
-
-const getItems = async (key) => {
-    let jsonValue = await AsyncStorage.getItem('@'+key);
+const getItems = async () => {
+    let jsonValue = await AsyncStorage.getItem(itemsKey);
     
     if (jsonValue == null) {
-        await createDefaultItems(key);
-        return getItems(key);
+        await createDefaultItems();
+        return getItems();
     }
 
     let items = JSON.parse(jsonValue)
-    return items.sort();
+    return items;
 }
 
-const getInventoryKey = (gameName, itemKey) => {
-    return '@'+gameName+itemKey;
-}
-
-const createInventory = async (gameName, itemKey) => {
-    const storageKey = getInventoryKey(gameName, itemKey);
-    const items = await getItems(itemKey);
+export const createInventoryGame = async (gameName) => {
+    const storageKey = getInventoryKey(gameName);
+    const items = await getItems();
     let inventoryList = [];
 
     for (let item of items) {
         let element = {
-            ItemName: item,
+            ItemName: item.ItemName,
+            Category: item.Category,
             Count: 0
         };
 
@@ -90,90 +81,20 @@ const createInventory = async (gameName, itemKey) => {
     await AsyncStorage.setItem(storageKey, jsonValue);
 }
 
-const getInventory = async (gameName, itemKey) => {
-    const inventoryKey = getInventoryKey(gameName, itemKey);
-    const jsonValue = await AsyncStorage.getItem(inventoryKey);
-    
-    if(jsonValue == null) {
-        return null;
-    }
-
-    let inventory = JSON.parse(jsonValue)
-    return inventory;
-}
-
-export const createKitchenItem = async (itemName) => {
-    await saveItem(itemKitchenKey, defaultKitchenItems, itemName);
-}
-
-export const createBookItem = async (itemName) => {
-    await saveItem(itemsBooksKey, defaultBooksItems, itemName);
-}
-
-export const createToolItem = async (itemName) => {
-    await saveItem(itemsToolsKey, defaultToolsItems, itemName);
-}
-
-export const createWaponsItem = async (itemName) => {
-    await saveItem(itemsWeaponsKey, defaultWeaponsItems, itemName);
-}
-
-export const createInventoryGame = async (gameName) => {
-    await createInventory(gameName, itemKitchenKey);
-    await createInventory(gameName, itemsBooksKey);
-    await createInventory(gameName, itemsToolsKey);
-    await createInventory(gameName, itemsWeaponsKey);
+export const updateInventoryGame = async (gameName, inventoryList) => {
+    const storageKey = getInventoryKey(gameName);
+    let jsonValue = JSON.stringify(inventoryList);
+    await AsyncStorage.setItem(storageKey, jsonValue);
 }
 
 export const deleteInventoryGame = async (gameName) => {
-    const kitchenKey = getInventoryKey(gameName, itemKitchenKey);
-    await AsyncStorage.removeItem(kitchenKey);
-
-    const boolKey = getInventoryKey(gameName, itemsBooksKey);
-    await AsyncStorage.removeItem(boolKey);
-
-    const toolsKey = getInventoryKey(gameName, itemsToolsKey);
-    await AsyncStorage.removeItem(toolsKey);
-
-    const weaponKey = getInventoryKey(gameName, itemsWeaponsKey);
-    await AsyncStorage.removeItem(weaponKey);
+    const storageKey = getInventoryKey(gameName);
+    await AsyncStorage.removeItem(storageKey);
 }
 
-export const getKitechenInventory = async (gameName) => {
-    return await getInventory(gameName, itemKitchenKey);
-}
-
-export const getBookInventory = async (gameName) => {
-    return await getInventory(gameName, itemsBooksKey);
-}
-
-export const getToolsInventory = async (gameName) => {
-    return await getInventory(gameName, itemsToolsKey);
-}
-
-export const getWeaponInventory = async (gameName) => {
-    return await getInventory(gameName, itemsWeaponsKey);
-}
-
-export const getAllInventory = async (gameName) => {
-    const kitechen = await getInventory(gameName, itemKitchenKey);
-    const books = await getInventory(gameName, itemsBooksKey);
-    const tools = await getInventory(gameName, itemsToolsKey);
-    const weapons = await getInventory(gameName, itemsWeaponsKey);
-
-    let inventory = []
-    inventory.push(kitechen);
-    inventory.push(books);
-    inventory.push(tools);
-    inventory.push(weapons);
-
-    return inventory;
-}
-
-export const pruenaKeys = async () => {
-    return await AsyncStorage.getAllKeys();
-}
-
-export const borrarKeys = async () => {
-    return await AsyncStorage.clear();
+export const getInventoryGame = async (gameName) => {
+    const storageKey = getInventoryKey(gameName);
+    const jsonValue = await AsyncStorage.getItem(storageKey);
+    let inventoryList = JSON.parse(jsonValue)
+    return inventoryList;
 }

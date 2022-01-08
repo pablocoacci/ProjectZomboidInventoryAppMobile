@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import style from './styles';
 import * as GameRepository from '../../repositories/GamesRepository';
 import * as ItemsRepository from '../../repositories/ItemsRepository';
@@ -41,16 +41,16 @@ export default function GameManagerScreen({ navigation, route }) {
   }
 
   const Item = ({ gameName }) => (
-    <View style={{flexDirection:'row', backgroundColor:'lavender', marginBottom:15, justifyContent: 'space-between'}}>
-      <Text style={{fontSize: 25, marginLeft:5, padding:15}}>{gameName}</Text>
+    <View style={{ height: 50, flexDirection:'row', backgroundColor:'lavender', marginBottom:10, justifyContent: 'space-between'}}>
+      <Text style={{fontSize: 25, width: '60%', textAlignVertical:'center'}}>{gameName}</Text>
       <TouchableOpacity
-        style={{margin:10,padding:15,backgroundColor:'lightcoral'}}
+        style={{backgroundColor:'lightcoral', width: '15%', justifyContent:'center', alignItems:'center'}}
         onPress={() => {deleteGame(gameName)}}
       >
         <Text>Borrar</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={{margin:10,padding:15,backgroundColor:'lightcoral'}}
+        style={{backgroundColor:'lightcoral', width: '15%', justifyContent:'center', alignItems:'center'}}
         onPress={() => navigation.navigate('Inventory', {gameName: gameName})}
       >
         <Text>Ver</Text>
@@ -65,7 +65,7 @@ export default function GameManagerScreen({ navigation, route }) {
   return (
       <View style={{flex:1, marginLeft: 10, marginRight: 10}}>
         <View>
-          <Text style={{fontSize: 15, marginTop: 5, marginBottom: 10}}>Nombre de la Partida</Text>
+          <Text style={{fontSize: 15, marginTop: 5, marginBottom: 10,  color: "#000", fontWeight: "bold"}}>Nombre de la Partida:</Text>
           <TextInput
             style={{borderWidth:1, padding: 3, marginBottom: 10}}
             onChangeText={setGameName}
