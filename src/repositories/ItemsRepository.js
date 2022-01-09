@@ -520,8 +520,8 @@ const onlyUnique = (value, index, self) => {
 
 export const getAllCategories = () => {
     let categories = defaultItemList.map(i => i.Category);
-    let distinctCategories = categories.filter(onlyUnique);
-    distinctCategories.push("Todas");
+    distinctCategories = ["Todas"];
+    distinctCategories = distinctCategories.concat(categories.filter(onlyUnique));
     return distinctCategories;
 }
 

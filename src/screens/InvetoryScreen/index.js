@@ -90,7 +90,7 @@ export default function InvetoryScreen({ navigation, route }) {
             setCategorySelect(selectedItem);
             setRefresh(!refresh);
           }}
-          defaultValueByIndex={0}
+          defaultValue={"Todas"}
           buttonTextAfterSelection={(selectedItem, index) => {
             return selectedItem;
           }}
