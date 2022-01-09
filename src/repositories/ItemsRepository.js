@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const itemsKey = '@itemsKey';
 
-const defaultItemList = [
+export const defaultItemList = [
     {
         ItemName: 'Carpinteria novatos',
         Category: 'Libro'
@@ -502,7 +502,7 @@ const createDefaultItems = async () => {
     await AsyncStorage.setItem(itemsKey, jsonValue)
 }
 
-const getItems = async () => {
+export const getItems = async () => {
     let jsonValue = await AsyncStorage.getItem(itemsKey);
     
     if (jsonValue == null) {
