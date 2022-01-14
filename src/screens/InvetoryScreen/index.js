@@ -5,7 +5,7 @@ import SelectDropdown from "react-native-select-dropdown";
 
 export default function InvetoryScreen({ navigation, route }) {
   const gameName = route.params.gameName;
-  const categories = ItemsRepository.getAllCategories();
+  const categories = ItemsRepository.getAllCategoriesWithDefault();
   const [categorySelect, setCategorySelect] = useState('Todas');
   const [itemName, setItemName] = useState('');
   const [itemDataList, setItemDataList] = useState([]);

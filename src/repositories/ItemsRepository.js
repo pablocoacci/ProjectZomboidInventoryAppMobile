@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as GameRepository from './GamesRepository';
 
 const itemsKey = '@itemsKey';
 
@@ -518,11 +519,16 @@ const onlyUnique = (value, index, self) => {
     return self.indexOf(value) === index;
   }
 
-export const getAllCategories = () => {
+export const getAllCategoriesWithDefault = () => {
     let categories = defaultItemList.map(i => i.Category);
     distinctCategories = ["Todas"];
     distinctCategories = distinctCategories.concat(categories.filter(onlyUnique));
     return distinctCategories;
+}
+
+export const getAllCategories = () => {
+    let categories = defaultItemList.map(i => i.Category);
+    return categories.filter(onlyUnique);
 }
 
 export const createInventoryGame = async (gameName) => {
@@ -560,4 +566,69 @@ export const getInventoryGame = async (gameName) => {
     const jsonValue = await AsyncStorage.getItem(storageKey);
     let inventoryList = JSON.parse(jsonValue)
     return inventoryList;
+}
+
+export const existItem = async(itemName) => {
+    let itemsList = await getItems();
+    let item = itemsList.find(i => i.ItemName == itemName);
+    return item != null;
+}
+
+export const addNewItem = async(newItemName, itemCategory) => {
+    let newItem = {
+        ItemName: newItemName,
+        Category: itemCategory
+    }
+
+    let itemsList = await getItems();
+    itemsList.push(newItem);
+
+    const jsonValue = JSON.stringify(itemsList);
+    await AsyncStorage.setItem(itemsKey, jsonValue);
+
+    const gameList = await GameRepository.getAllGames();
+    
+    for (let gameName of gameList) {
+        let inventory = await getInventoryGame(gameName);
+
+        let newItemInventory = {
+            ItemName: newItemName,
+            Category: itemCategory,
+            Count: 0
+        }
+
+        inventory.push(newItemInventory);
+        await updateInventoryGame(gameName, inventory);
+    }
+}
+
+export const deleteItem = async(itemNameDel) => {
+    let itemsList = await getItems();
+    let index = -1;
+
+    for (let i = 0; i < itemsList.length; i++) {
+        if (itemsList[i].ItemName == itemNameDel) {
+            index = i
+            break;
+        }
+    }
+
+    itemsList.splice(index, 1);
+    const jsonValue = JSON.stringify(itemsList);
+    await AsyncStorage.setItem(itemsKey, jsonValue);
+
+    const gameList = await GameRepository.getAllGames();
+    for (let gameName of gameList) {
+        let inventory = await getInventoryGame(gameName);
+
+        for (let i = 0; i < inventory.length; i++) {
+            if (inventory[i].ItemName == itemNameDel) {
+                index = i;
+                break;
+            }
+        }
+
+        inventory.splice(index, 1);
+        await updateInventoryGame(gameName, inventory);
+    }
 }
