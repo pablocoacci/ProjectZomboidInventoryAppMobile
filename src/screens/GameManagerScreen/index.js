@@ -41,16 +41,16 @@ export default function GameManagerScreen({ navigation, route }) {
   }
 
   const Item = ({ gameName }) => (
-    <View style={{ height: 50, flexDirection:'row', backgroundColor:'lavender', marginBottom:10, justifyContent: 'space-between'}}>
-      <Text style={{fontSize: 25, width: '60%', textAlignVertical:'center'}}>{gameName}</Text>
+    <View style={style.itemListContainer}>
+      <Text style={style.itemText}>{gameName}</Text>
       <TouchableOpacity
-        style={{backgroundColor:'lightcoral', width: '15%', justifyContent:'center', alignItems:'center'}}
+        style={style.buttonItemList}
         onPress={() => {deleteGame(gameName)}}
       >
         <Text>Borrar</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={{backgroundColor:'lightcoral', width: '15%', justifyContent:'center', alignItems:'center'}}
+        style={style.buttonItemList}
         onPress={() => navigation.navigate('Inventory', {gameName: gameName})}
       >
         <Text>Ver</Text>
@@ -63,23 +63,23 @@ export default function GameManagerScreen({ navigation, route }) {
   );
 
   return (
-      <View style={{flex:1, marginLeft: 10, marginRight: 10}}>
+      <View style={style.basicContainer}>
         <View>
-          <Text style={{fontSize: 15, marginTop: 5, marginBottom: 10,  color: "#000", fontWeight: "bold"}}>Nombre de la Partida:</Text>
+          <Text style={style.titleText}>Nombre de la Partida:</Text>
           <TextInput
-            style={{borderWidth:1, padding: 3, marginBottom: 10}}
+            style={style.basicInputText}
             onChangeText={setGameName}
             value={gameName}
           />
         
           <TouchableOpacity
-            style={{alignItems: "center",backgroundColor: "#DDDDDD", padding: 10, marginBottom: 10}}
+            style={style.basicButton}
             onPress={newGame}
           >
             <Text>Crear Partida</Text>
           </TouchableOpacity>
         </View>
-        <View style={{flex:1, borderWidth:1}}>
+        <View style={style.flatListContainer}>
           <FlatList
             data={gameList}
             renderItem={renderItem}

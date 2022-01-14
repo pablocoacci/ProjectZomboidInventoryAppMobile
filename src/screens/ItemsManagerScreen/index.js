@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Button, Alert, Modal, StyleSheet, Dimensions} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Alert, Modal, StyleSheet, Dimensions} from 'react-native';
 import SelectDropdown from "react-native-select-dropdown";
+import style from './styles';
 import * as ItemsRepository from '../../repositories/ItemsRepository';
 
 const windowWidth = Dimensions.get('window').width;
@@ -41,11 +42,11 @@ export default function ItemsScreen({ navigation, route }) {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={{height: 40, flexDirection:'row', backgroundColor:'lavender', marginBottom:5, justifyContent: 'space-between'}}>
-        <Text style={{width: '50%', fontSize: 15, textAlignVertical:'center', paddingLeft: 5}}>{item.ItemName}</Text>
-        <Text style={{textAlignVertical:'center'}}>{item.Category}</Text>
+      <View style={style.itemContainer}>
+        <Text style={style.principalItemText}>{item.ItemName}</Text>
+        <Text style={style.secundaryItemText}>{item.Category}</Text>
         <TouchableOpacity
-          style={{ backgroundColor:'lightcoral', width: 70, justifyContent:'center', alignItems:'center' }}
+          style={style.buttonItem}
           onPress={() => {deleteItem(item.ItemName)}}
         >
           <Text>Borrar</Text>
@@ -55,8 +56,8 @@ export default function ItemsScreen({ navigation, route }) {
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <View style={{flex:1, borderWidth:1, width: '90%', marginBottom: 8}}>
+    <View style={style.basicContainer}>
+      <View style={style.flatListContainer}>
         <FlatList
           data={itemList}
           renderItem={renderItem}
@@ -64,7 +65,7 @@ export default function ItemsScreen({ navigation, route }) {
         />
       </View>
       <TouchableOpacity
-        style={{alignItems: "center",backgroundColor: "#DDDDDD", padding: 10, marginBottom: 10, width: '90%'}}
+        style={style.basicButton}
         onPress={() => setModalVisible(!modalVisible)}
       >
         <Text>Crear Nuevo Item</Text>
@@ -79,11 +80,11 @@ export default function ItemsScreen({ navigation, route }) {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={{marginBottom: 10, fontSize: 17}}>Nuevo Item</Text>
+        <View style={style.centeredView}>
+          <View style={style.modalView}>
+            <Text style={style.modalTitleText}>Nuevo Item</Text>
             <TextInput 
-              style={{borderWidth: 1, width: windowWidth * 0.7, height: 40, marginBottom: 8}}
+              style={style.modalInputText}
               onChangeText={setItemName} 
               value={itemName}
             />
@@ -99,20 +100,28 @@ export default function ItemsScreen({ navigation, route }) {
               rowTextForSelection={(item, index) => {
                 return item;
               }}
-              buttonStyle={styles.dropdown2BtnStyle}
-              buttonTextStyle={styles.dropdown2BtnTxtStyle}
+              buttonStyle={style.dropdown2BtnStyle}
+              buttonTextStyle={style.dropdown2BtnTxtStyle}
               dropdownIconPosition={"right"}
-              dropdownStyle={styles.dropdown2DropdownStyle}
-              rowStyle={styles.dropdown2RowStyle}
-              rowTextStyle={styles.dropdown2RowTxtStyle}
+              dropdownStyle={style.dropdown2DropdownStyle}
+              rowStyle={style.dropdown2RowStyle}
+              rowTextStyle={style.dropdown2RowTxtStyle}
             />
             <TouchableOpacity
-              style={{alignItems: "center",backgroundColor: "#DDDDDD", padding: 10, marginBottom: 10, width: windowWidth * 0.7}}
+              style={style.modalButton}
               onPress={() => {
                 createNewItem();
               }}
             >
               <Text>Crear</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={style.modalButton}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Text>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -120,46 +129,3 @@ export default function ItemsScreen({ navigation, route }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 25,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  dropdown2BtnStyle: {
-    width: windowWidth * 0.7,
-    height: 50,
-    backgroundColor: "#444",
-    borderRadius: 8,
-    marginBottom: 10
-  },
-  dropdown2BtnTxtStyle: {
-    color: "#FFF",
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  dropdown2DropdownStyle: { backgroundColor: "#444" },
-  dropdown2RowStyle: { backgroundColor: "#444", borderBottomColor: "#C5C5C5" },
-  dropdown2RowTxtStyle: {
-    color: "#FFF",
-    textAlign: "center",
-    fontWeight: "bold",
-  }
-});

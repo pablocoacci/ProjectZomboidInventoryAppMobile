@@ -1,5 +1,6 @@
 import React, { useState, useEffect }from "react";
 import { View, Text, Dimensions, StyleSheet, Button, TextInput, FlatList, TouchableOpacity } from "react-native";
+import style from './styles';
 import * as ItemsRepository from '../../repositories/ItemsRepository';
 import SelectDropdown from "react-native-select-dropdown";
 
@@ -51,18 +52,18 @@ export default function InvetoryScreen({ navigation, route }) {
 
   const renderItem = ({item}) => {
     return (
-      <View style={{ height: 40, flexDirection:'row', backgroundColor:'lavender', marginBottom:5, justifyContent: 'space-between'}}>
-        <Text style={{ width: '60%', fontSize: 18, textAlignVertical:'center'}}>{item.ItemName}</Text>
-        <Text style={{ fontSize: 18, textAlignVertical:'center'}}>{item.Category.charAt(0)}</Text>
+      <View style={style.itemContainer}>
+        <Text style={style.principalItemText}>{item.ItemName}</Text>
+        <Text style={style.secundariItemText}>{item.Category.charAt(0)}</Text>
         <TouchableOpacity
-          style={{ backgroundColor:'lightcoral', width: 30, justifyContent:'center', alignItems:'center' }}
+          style={style.itemButon}
           onPress={() => {addItem(item.ItemName)}}
         >
           <Text>+</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: 18, textAlignVertical:'center'}}>{item.Count}</Text>
+        <Text style={style.secundariItemText}>{item.Count}</Text>
         <TouchableOpacity
-          style={{ backgroundColor:'lightcoral', width: 30, justifyContent:'center', alignItems:'center' }}
+          style={style.itemButon}
           onPress={() => {subtractItem(item.ItemName)}}
         >
           <Text>-</Text>
@@ -72,12 +73,12 @@ export default function InvetoryScreen({ navigation, route }) {
   }
 
   return (
-      <View style={{flex:1, marginLeft: 10, marginRight: 10}}>
+      <View style={style.principalContainer}>
         <View>
-          <Text style={{fontSize: 15, marginTop: 5, marginBottom: 10,  color: "#000", fontWeight: "bold"}}>Partida: {gameName}</Text>
+          <Text style={style.titleText}>Partida: {gameName}</Text>
         </View>
         <TextInput
-          style={{borderWidth:1, padding: 3, marginBottom: 10}}
+          style={style.basicInputText}
           onChangeText={(value) => {
             setItemName(value);
             setRefresh(!refresh);
@@ -97,14 +98,14 @@ export default function InvetoryScreen({ navigation, route }) {
           rowTextForSelection={(item, index) => {
             return item;
           }}
-          buttonStyle={styles.dropdown2BtnStyle}
-          buttonTextStyle={styles.dropdown2BtnTxtStyle}
+          buttonStyle={style.dropdown2BtnStyle}
+          buttonTextStyle={style.dropdown2BtnTxtStyle}
           dropdownIconPosition={"right"}
-          dropdownStyle={styles.dropdown2DropdownStyle}
-          rowStyle={styles.dropdown2RowStyle}
-          rowTextStyle={styles.dropdown2RowTxtStyle}
+          dropdownStyle={style.dropdown2DropdownStyle}
+          rowStyle={style.dropdown2RowStyle}
+          rowTextStyle={style.dropdown2RowTxtStyle}
         />
-        <View style={{flex: 1, borderWidth:1, marginBottom: 5}}>
+        <View style={style.flatListContainer}>
           <FlatList
             data={itemDataList}
             renderItem={renderItem}
@@ -115,25 +116,3 @@ export default function InvetoryScreen({ navigation, route }) {
       </View>
   );
 };
-
-const styles = StyleSheet.create({
-  dropdown2BtnStyle: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#444",
-    borderRadius: 8,
-    marginBottom: 10
-  },
-  dropdown2BtnTxtStyle: {
-    color: "#FFF",
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  dropdown2DropdownStyle: { backgroundColor: "#444" },
-  dropdown2RowStyle: { backgroundColor: "#444", borderBottomColor: "#C5C5C5" },
-  dropdown2RowTxtStyle: {
-    color: "#FFF",
-    textAlign: "center",
-    fontWeight: "bold",
-  }
-});
