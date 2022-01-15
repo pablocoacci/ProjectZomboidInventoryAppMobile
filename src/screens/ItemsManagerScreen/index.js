@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, Alert, Modal, ImageBackground} from 'react-native';
 import DropDownList from '../../components/DropDownList';
+import BasicInputText from '../../components/BasicInputText';
 import ButtonFlatList from '../../components/ButtonFlatList';
 import BasicButton from '../../components/BasicButton';
 import style from './styles';
@@ -13,13 +14,28 @@ export default function ItemsScreen({ navigation, route }) {
   const [refresh, setRefresh] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState('');
+  const [itemNameSearch, setItemNameSearch] = useState('');
   
   useEffect(async () => {
-    let items = await ItemsRepository.getItems();
+    let items = await filterInventory();
     setItemList(items);
   }, [refresh])
 
+  const filterInventory = async () => {
+    let filterList = await ItemsRepository.getItems();
+    
+    if (itemNameSearch != '') {
+      filterList = filterList.filter(i => i.ItemName.toLowerCase().includes(itemNameSearch.toLowerCase()));
+    }
+    
+    return filterList;
+  }
+
   const createNewItem = async() => {
+    if(itemName == null || itemName == '') {
+      return;
+    }
+
     const existItem = await ItemsRepository.existItem(itemName)
     
     if (existItem) {
@@ -53,6 +69,15 @@ export default function ItemsScreen({ navigation, route }) {
   return (
     <ImageBackground source={require('../../img/PZBackground.jpg')} resizeMode="cover" style={style.image}>
     <View style={style.basicContainer}>
+      <View style={{width: '90%', marginTop: 10}}>
+        <BasicInputText 
+          valueText={itemNameSearch}
+          funcChange={(value) => {
+            setItemNameSearch(value);
+            setRefresh(!refresh);
+          }}
+        />
+      </View>
       <View style={style.flatListContainer}>
         <FlatList
           data={itemList}
@@ -61,7 +86,7 @@ export default function ItemsScreen({ navigation, route }) {
         />
       </View>
       <View style={{width:'90%'}}>
-      <BasicButton buttonText='Crear Nuevo Item' funcOnClick={() => setModalVisible(!modalVisible)}/>
+        <BasicButton buttonText='Crear Nuevo Item' funcOnClick={() => setModalVisible(!modalVisible)}/>
       </View>
       <Modal
         animationType="fade"

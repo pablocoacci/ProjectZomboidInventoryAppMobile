@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
     titleLabel: {
-        fontSize: 15, 
+        fontSize: 17, 
         marginTop: 5, 
         marginBottom: 10, 
         color: 'azure', 

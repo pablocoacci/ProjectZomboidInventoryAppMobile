@@ -6,12 +6,12 @@ const style = StyleSheet.create({
     basicContainer: {
         flex: 1, 
         alignItems: 'center', 
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     flatListContainer: {
         flex:1,
         width: '90%', 
-        marginBottom: 8
+        marginBottom: 15
     },
     modalTitleText: {
         marginBottom: 10, 

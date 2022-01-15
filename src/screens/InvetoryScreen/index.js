@@ -25,7 +25,7 @@ export default function InvetoryScreen({ navigation, route }) {
     let filterList = await ItemsRepository.getInventoryGame(gameName);
     
     if (itemName != '') {
-      filterList = filterList.filter(i => i.ItemName.toLowerCase().startsWith(itemName.toLowerCase()));
+      filterList = filterList.filter(i => i.ItemName.toLowerCase().includes(itemName.toLowerCase()));
     }
     
     if (categorySelect != 'Todas') {
