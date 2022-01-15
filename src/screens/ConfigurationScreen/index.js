@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { View, Text, Button } from 'react-native';
+import { ImageBackground, View } from 'react-native';
+import style from './styles';
+import TitleTextLabel from '../../components/TitleTextLabel';
+import BasicButton from '../../components/BasicButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function GameConfigurationScreen({ navigation, route }) {
@@ -10,13 +13,11 @@ export default function GameConfigurationScreen({ navigation, route }) {
     }
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>GameConfiguration Screen</Text>
-        <Button
-            onPress={cleanStorage}
-            title="Limpiar Storage"
-            color="#841584"
-        />
+      <ImageBackground source={require('../../img/PZBackground.jpg')} resizeMode="cover" style={style.image}>
+      <View style={style.basicContainer}>
+        <TitleTextLabel labelText='Configuraciones'/>
+        <BasicButton buttonText='Limpiar Storage' funcOnClick={cleanStorage} />
       </View>
+      </ImageBackground>
     );
   }

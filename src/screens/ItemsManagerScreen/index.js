@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Alert, Modal, StyleSheet, Dimensions} from 'react-native';
-import SelectDropdown from "react-native-select-dropdown";
+import { View, Text, TextInput, FlatList, Alert, Modal, ImageBackground} from 'react-native';
+import DropDownList from '../../components/DropDownList';
+import ButtonFlatList from '../../components/ButtonFlatList';
+import BasicButton from '../../components/BasicButton';
 import style from './styles';
 import * as ItemsRepository from '../../repositories/ItemsRepository';
-
-const windowWidth = Dimensions.get('window').width;
 
 export default function ItemsScreen({ navigation, route }) {  
   const categories = ItemsRepository.getAllCategories();
@@ -45,17 +45,13 @@ export default function ItemsScreen({ navigation, route }) {
       <View style={style.itemContainer}>
         <Text style={style.principalItemText}>{item.ItemName}</Text>
         <Text style={style.secundaryItemText}>{item.Category}</Text>
-        <TouchableOpacity
-          style={style.buttonItem}
-          onPress={() => {deleteItem(item.ItemName)}}
-        >
-          <Text>Borrar</Text>
-        </TouchableOpacity>
+        <ButtonFlatList buttonWidth='15%' iconSize={30} iconName='delete' funcOnClick={() => {deleteItem(item.ItemName)}} />
       </View>
     );
   }
 
   return (
+    <ImageBackground source={require('../../img/PZBackground.jpg')} resizeMode="cover" style={style.image}>
     <View style={style.basicContainer}>
       <View style={style.flatListContainer}>
         <FlatList
@@ -64,13 +60,9 @@ export default function ItemsScreen({ navigation, route }) {
           keyExtractor={(item) => item.ItemName}
         />
       </View>
-      <TouchableOpacity
-        style={style.basicButton}
-        onPress={() => setModalVisible(!modalVisible)}
-      >
-        <Text>Crear Nuevo Item</Text>
-      </TouchableOpacity>
-
+      <View style={{width:'90%'}}>
+      <BasicButton buttonText='Crear Nuevo Item' funcOnClick={() => setModalVisible(!modalVisible)}/>
+      </View>
       <Modal
         animationType="fade"
         transparent={true}
@@ -88,44 +80,21 @@ export default function ItemsScreen({ navigation, route }) {
               onChangeText={setItemName} 
               value={itemName}
             />
-            <SelectDropdown
-              data={categories}
-              onSelect={(selectedItem, index) => {
-                setCategorySelect(selectedItem);
-              }}
-              defaultValueByIndex={0}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                return selectedItem;
-              }}
-              rowTextForSelection={(item, index) => {
-                return item;
-              }}
-              buttonStyle={style.dropdown2BtnStyle}
-              buttonTextStyle={style.dropdown2BtnTxtStyle}
-              dropdownIconPosition={"right"}
-              dropdownStyle={style.dropdown2DropdownStyle}
-              rowStyle={style.dropdown2RowStyle}
-              rowTextStyle={style.dropdown2RowTxtStyle}
-            />
-            <TouchableOpacity
-              style={style.modalButton}
-              onPress={() => {
-                createNewItem();
-              }}
-            >
-              <Text>Crear</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={style.modalButton}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text>Cerrar</Text>
-            </TouchableOpacity>
+            <View style={style.modalButtons}>
+              <DropDownList 
+                dropDownList={categories} 
+                defaultValue='Libro' 
+                funcOnSelect={(selectedItem, index) => {
+                  setCategorySelect(selectedItem);
+                }}
+              />
+              <BasicButton buttonText='Crear' funcOnClick={() => {createNewItem();}} />
+              <BasicButton buttonText='Cancelar' funcOnClick={() => {setModalVisible(!modalVisible);}} />
+            </View>
           </View>
         </View>
       </Modal>
     </View>
+    </ImageBackground>
   );
 }
