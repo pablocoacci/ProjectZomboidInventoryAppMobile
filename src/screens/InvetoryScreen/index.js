@@ -1,8 +1,12 @@
 import React, { useState, useEffect }from "react";
-import { View, Text, Dimensions, StyleSheet, Button, TextInput, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, Button, TextInput, FlatList, TouchableOpacity, ImageBackground } from "react-native";
 import style from './styles';
 import * as ItemsRepository from '../../repositories/ItemsRepository';
-import SelectDropdown from "react-native-select-dropdown";
+import TitleTextLabel from '../../components/TitleTextLabel';
+import BasicInputText from '../../components/BasicInputText';
+import ButtonFlatList from '../../components/ButtonFlatList';
+import BasicButton from '../../components/BasicButton';
+import DropDownList from '../../components/DropDownList';
 
 export default function InvetoryScreen({ navigation, route }) {
   const gameName = route.params.gameName;
@@ -55,12 +59,7 @@ export default function InvetoryScreen({ navigation, route }) {
       <View style={style.itemContainer}>
         <Text style={style.principalItemText}>{item.ItemName}</Text>
         <Text style={style.secundariItemText}>{item.Category.charAt(0)}</Text>
-        <TouchableOpacity
-          style={style.itemButon}
-          onPress={() => {addItem(item.ItemName)}}
-        >
-          <Text>+</Text>
-        </TouchableOpacity>
+        <ButtonFlatList buttonWidth={'12%'} iconSize={30} iconName='plus' funcOnClick={() => {addItem(item.ItemName)}}/>
         <Text style={style.secundariItemText}>{item.Count}</Text>
         <TouchableOpacity
           style={style.itemButon}
@@ -68,42 +67,29 @@ export default function InvetoryScreen({ navigation, route }) {
         >
           <Text>-</Text>
         </TouchableOpacity>
+        <ButtonFlatList buttonWidth={'12%'} iconSize={30} iconName='minus' funcOnClick={() => {subtractItem(item.ItemName)}}/>
       </View>
     );
   }
 
   return (
+    <ImageBackground source={require('../../img/PZBackground.jpg')} resizeMode="cover" style={style.image}>
       <View style={style.principalContainer}>
-        <View>
-          <Text style={style.titleText}>Partida: {gameName}</Text>
-        </View>
-        <TextInput
-          style={style.basicInputText}
-          onChangeText={(value) => {
+        <TitleTextLabel labelText={'Partida: ' + gameName}/>
+        <BasicInputText 
+          valueText={itemName} 
+          funcChange={(value) => {
             setItemName(value);
             setRefresh(!refresh);
           }}
-          value={itemName}
         />
-        <SelectDropdown
-          data={categories}
-          onSelect={(selectedItem, index) => {
+        <DropDownList 
+          dropDownList={categories} 
+          defaultValue={"Todas"}
+          funcOnSelect={(selectedItem, index) => {
             setCategorySelect(selectedItem);
             setRefresh(!refresh);
           }}
-          defaultValue={"Todas"}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            return item;
-          }}
-          buttonStyle={style.dropdown2BtnStyle}
-          buttonTextStyle={style.dropdown2BtnTxtStyle}
-          dropdownIconPosition={"right"}
-          dropdownStyle={style.dropdown2DropdownStyle}
-          rowStyle={style.dropdown2RowStyle}
-          rowTextStyle={style.dropdown2RowTxtStyle}
         />
         <View style={style.flatListContainer}>
           <FlatList
@@ -112,7 +98,8 @@ export default function InvetoryScreen({ navigation, route }) {
             keyExtractor={(item) => item.ItemName}
           />
         </View>
-        <Button title="Volver" onPress={() => navigation.goBack()} />
+        <BasicButton buttonText='Volver' funcOnClick={() => navigation.goBack()} />
       </View>
+      </ImageBackground>
   );
 };

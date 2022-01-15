@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { ImageBackground, View, Text, FlatList } from 'react-native'; 
 import style from './styles';
+import TitleTextLabel from '../../components/TitleTextLabel';
+import BasicInputText from '../../components/BasicInputText';
+import BasicButton from '../../components/BasicButton';
+import ButtonFlatList from '../../components/ButtonFlatList';
 import * as GameRepository from '../../repositories/GamesRepository';
 import * as ItemsRepository from '../../repositories/ItemsRepository';
 
 export default function GameManagerScreen({ navigation, route }) {
-
   const [refresh, setRefresh] = useState(true);
   const [gameList, setGameList] = useState([]);
   const [gameName, setGameName] = useState('');
-
+  
   useEffect(async () => {
     let games = await GameRepository.getAllGames();
     setGameList(games);
@@ -43,18 +46,8 @@ export default function GameManagerScreen({ navigation, route }) {
   const Item = ({ gameName }) => (
     <View style={style.itemListContainer}>
       <Text style={style.itemText}>{gameName}</Text>
-      <TouchableOpacity
-        style={style.buttonItemList}
-        onPress={() => {deleteGame(gameName)}}
-      >
-        <Text>Borrar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={style.buttonItemList}
-        onPress={() => navigation.navigate('Inventory', {gameName: gameName})}
-      >
-        <Text>Ver</Text>
-      </TouchableOpacity>
+      <ButtonFlatList iconSize={30} iconName='delete' buttonWidth='15%' funcOnClick={() => deleteGame(gameName)} />
+      <ButtonFlatList iconSize={30} iconName='search1' buttonWidth='15%' funcOnClick={() => navigation.navigate('Inventory', {gameName: gameName})} />
     </View>
   );
 
@@ -63,21 +56,12 @@ export default function GameManagerScreen({ navigation, route }) {
   );
 
   return (
+    <ImageBackground source={require('../../img/PZBackground.jpg')} resizeMode="cover" style={style.image}>
       <View style={style.basicContainer}>
         <View>
-          <Text style={style.titleText}>Nombre de la Partida:</Text>
-          <TextInput
-            style={style.basicInputText}
-            onChangeText={setGameName}
-            value={gameName}
-          />
-        
-          <TouchableOpacity
-            style={style.basicButton}
-            onPress={newGame}
-          >
-            <Text>Crear Partida</Text>
-          </TouchableOpacity>
+          <TitleTextLabel labelText='Nombre de la Partida:'/>
+          <BasicInputText valueText={gameName} funcChange={setGameName}/>
+          <BasicButton funcOnClick={newGame} buttonText='Crear Partida'/>
         </View>
         <View style={style.flatListContainer}>
           <FlatList
@@ -87,5 +71,6 @@ export default function GameManagerScreen({ navigation, route }) {
           />
         </View>
       </View>
+      </ImageBackground>
     );
   }

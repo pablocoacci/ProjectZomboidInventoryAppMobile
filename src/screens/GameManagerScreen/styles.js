@@ -6,45 +6,27 @@ const style = StyleSheet.create({
     marginLeft: 10, 
     marginRight: 10
   },
-  titleText: {
-    fontSize: 15, 
-    marginTop: 5, 
-    marginBottom: 10, 
-    color: "#000", 
-    fontWeight: "bold"
-  },
-  basicInputText: {
-    borderWidth:1, 
-    padding: 3, 
-    marginBottom: 10
-  },
-  basicButton: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD", 
-    padding: 10, 
-    marginBottom: 10
-  },
   flatListContainer: {
-    flex:1, 
-    borderWidth:1
+    flex:1,
   },
   itemListContainer: {
     height: 50, 
     flexDirection:'row', 
-    backgroundColor:'lavender', 
     marginBottom:10, 
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderColor: 'azure', 
+    //borderWidth:1
   },
   itemText: {
     fontSize: 25, 
     width: '60%', 
-    textAlignVertical:'center'
+    textAlignVertical:'center',
+    color: 'azure',
+    marginLeft: 5
   },
-  buttonItemList: {
-    backgroundColor:'lightcoral', 
-    width: '15%', 
-    justifyContent:'center', 
-    alignItems:'center'
+  image: {
+    flex: 1,
+    justifyContent: "center"
   }
 });
 
