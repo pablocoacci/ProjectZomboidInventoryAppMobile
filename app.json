@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "zomboid-inventory",
-    "slug": "zomboid-inventory",
+    "name": "ProjectZomboidInventory",
+    "slug": "ProjectZomboidInventory",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.battosai85.ProjectZomboidInventory"
     },
     "web": {
       "favicon": "./assets/favicon.png"
