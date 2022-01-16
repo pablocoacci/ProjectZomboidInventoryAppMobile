@@ -36,21 +36,23 @@ export default function InvetoryScreen({ navigation, route }) {
   }
 
   const addItem = async (itemName) => {
-    let item = itemDataList.find(i => i.ItemName == itemName);
+    let inventory = await ItemsRepository.getInventoryGame(gameName);
+    let item = inventory.find(i => i.ItemName == itemName);
     item.Count++;
-    await ItemsRepository.updateInventoryGame(gameName,itemDataList);
+    await ItemsRepository.updateInventoryGame(gameName,inventory);
     setRefresh(!refresh);
   }
 
   const subtractItem = async (itemName) => {
-    let item = itemDataList.find(i => i.ItemName == itemName);
+    let inventory = await ItemsRepository.getInventoryGame(gameName);
+    let item = inventory.find(i => i.ItemName == itemName);
 
     if (item.Count <= 0) {
       return;
     }
 
     item.Count--;
-    await ItemsRepository.updateInventoryGame(gameName,itemDataList);
+    await ItemsRepository.updateInventoryGame(gameName, inventory);
     setRefresh(!refresh);
   }
 
